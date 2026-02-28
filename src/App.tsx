@@ -13,7 +13,10 @@ import {
   AlertCircle,
   Filter,
   LayoutGrid,
-  List as ListIcon
+  List as ListIcon,
+  Swords,
+  Shield,
+  ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -35,11 +38,11 @@ const CLASS_COLORS: Record<string, string> = {
 };
 
 const DIFFICULTIES = [
-  { id: "overall", name: "Overall", color: "text-gray-800" },
-  { id: "ascended", name: "Ascended", color: "text-purple-400" },
-  { id: "mythic", name: "Mythic", color: "text-red-400" },
-  { id: "heroic", name: "Heroic", color: "text-blue-400" },
-  { id: "normal", name: "Normal", color: "text-green-400" },
+  { id: "overall", name: "Overall", color: "text-gray-300", bg: "bg-gray-800", border: "border-gray-600" },
+  { id: "ascended", name: "Ascended", color: "text-purple-400", bg: "bg-purple-900/30", border: "border-purple-500/50" },
+  { id: "mythic", name: "Mythic", color: "text-red-400", bg: "bg-red-900/30", border: "border-red-500/50" },
+  { id: "heroic", name: "Heroic", color: "text-blue-400", bg: "bg-blue-900/30", border: "border-blue-500/50" },
+  { id: "normal", name: "Normal", color: "text-green-400", bg: "bg-green-900/30", border: "border-green-500/50" },
 ];
 
 interface ClassStats {
@@ -181,55 +184,113 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#7c3aed] text-[#1e293b] font-sans p-4 md:p-8">
+    <div className="min-h-screen bg-[#0f1115] text-gray-200 font-sans selection:bg-purple-500/30">
+      {/* Background Effects */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-900/10 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay" />
+      </div>
+
       {/* Progress Bar */}
       {progress > 0 && progress < 100 && (
-        <div className="fixed top-0 left-0 w-full h-1 z-[60]">
+        <div className="fixed top-0 left-0 w-full h-1 z-[60] bg-gray-800">
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            className="h-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+            className="h-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
           />
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto">
-        {/* Difficulty Selector */}
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="flex justify-center gap-2">
-            {DIFFICULTIES.map((diff) => (
-              <button
-                key={diff.id}
-                onClick={() => setDifficulty(diff.id)}
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all shadow-md ${
-                  difficulty === diff.id 
-                    ? "bg-white text-[#7c3aed]" 
-                    : "bg-[#6d28d9] text-white/80 hover:bg-[#5b21b6]"
-                }`}
-              >
-                {diff.name}
-              </button>
-            ))}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Header Section */}
+        <header className="mb-12 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between border-b border-gray-800 pb-8 gap-6">
+          <div>
+            <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+              <Swords className="w-8 h-8 text-purple-500" />
+              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white uppercase" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                Class Rankings
+              </h1>
+            </div>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm font-medium text-gray-400">
+              <span className="px-3 py-1 bg-gray-800/80 rounded-md border border-gray-700/50 shadow-sm">
+                Project Ascension
+              </span>
+              <span className="px-3 py-1 bg-amber-900/30 text-amber-400 rounded-md border border-amber-700/30 shadow-sm flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5" /> Bronzebeard
+              </span>
+              <span className="px-3 py-1 bg-red-900/20 text-red-400 rounded-md border border-red-900/30 shadow-sm">
+                Molten Core (Phase 2)
+              </span>
+            </div>
           </div>
           
-          {isDemo && (
-            <div className="bg-amber-500/20 border border-amber-500/30 text-amber-200 px-4 py-1 rounded-full text-xs font-bold flex items-center gap-2">
-              <AlertCircle className="w-3 h-3" />
-              SHOWING DEMO DATA (API CONNECTION FAILED)
-            </div>
-          )}
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <a 
+              href="https://ascensionlogs.gg" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-purple-400 transition-colors bg-gray-900/50 px-4 py-2 rounded-lg border border-gray-800 hover:border-purple-500/30"
+            >
+              Data powered by <span className="text-gray-300 group-hover:text-purple-300 font-bold">ascensionlogs.gg</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </header>
+
+        {/* Controls Section */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-10 bg-gray-900/40 p-4 rounded-2xl border border-gray-800/60 backdrop-blur-sm">
+          <div className="flex flex-wrap justify-center gap-2">
+            {DIFFICULTIES.map((diff) => {
+              const isActive = difficulty === diff.id;
+              return (
+                <button
+                  key={diff.id}
+                  onClick={() => setDifficulty(diff.id)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border ${
+                    isActive 
+                      ? `${diff.bg} ${diff.border} ${diff.color} shadow-[0_0_15px_rgba(0,0,0,0.2)] scale-105` 
+                      : "bg-gray-800/50 border-transparent text-gray-400 hover:bg-gray-800 hover:text-gray-200"
+                  }`}
+                >
+                  {diff.name}
+                </button>
+              );
+            })}
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {isDemo && (
+              <div className="bg-amber-900/40 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                DEMO DATA
+              </div>
+            )}
+            <button 
+              onClick={fetchRankings}
+              disabled={loading}
+              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_20px_rgba(147,51,234,0.5)]"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* Success Bar */}
         <AnimatePresence>
           {!loading && classStats.length > 0 && (
             <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`${isDemo ? 'bg-amber-100 border-amber-200 text-amber-800' : 'bg-[#dcfce7] border-[#bbf7d0] text-[#166534]'} px-4 py-2 rounded-md mb-6 flex items-center gap-2 text-sm font-medium border`}
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+              className="overflow-hidden"
             >
-              <span className="text-lg">{isDemo ? '⚠' : '✓'}</span>
-              Loaded {classStats.length} classes {isDemo ? '(Deterministic Demo Mode)' : ''}
+              <div className={`${isDemo ? 'bg-amber-900/20 border-amber-700/30 text-amber-400' : 'bg-emerald-900/20 border-emerald-700/30 text-emerald-400'} px-4 py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-medium border backdrop-blur-sm`}>
+                <span className="text-lg">{isDemo ? '⚠' : '✓'}</span>
+                Successfully loaded {classStats.length} class rankings {isDemo ? '(Deterministic Demo Mode)' : ''}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -239,76 +300,117 @@ export default function App() {
           {loading ? (
             <motion.div 
               key="loading"
-              className="flex flex-col items-center justify-center py-32 text-white"
+              className="flex flex-col items-center justify-center py-32 text-gray-400"
             >
-              <RefreshCw className="w-12 h-12 animate-spin mb-4" />
-              <p className="font-bold tracking-widest uppercase">Fetching Data...</p>
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-gray-800 rounded-full"></div>
+                <div className="w-16 h-16 border-4 border-purple-500 rounded-full border-t-transparent animate-spin absolute top-0 left-0"></div>
+              </div>
+              <p className="mt-6 font-bold tracking-widest uppercase text-sm text-gray-500">Scraping Logs...</p>
             </motion.div>
           ) : error && classStats.length === 0 ? (
             <motion.div 
               key="error"
-              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 text-center text-white"
+              className="bg-gray-900/50 backdrop-blur-md border border-red-900/30 rounded-2xl p-10 text-center max-w-lg mx-auto"
             >
-              <AlertCircle className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Error Loading Data</h3>
-              <p className="opacity-80 mb-6">{error}</p>
-              <button onClick={fetchRankings} className="bg-white text-[#7c3aed] px-8 py-2 rounded-lg font-bold">Retry</button>
+              <AlertCircle className="w-16 h-16 mx-auto mb-6 text-red-500/80" />
+              <h3 className="text-2xl font-bold mb-3 text-white">Data Retrieval Failed</h3>
+              <p className="text-gray-400 mb-8 leading-relaxed">{error}</p>
+              <button onClick={fetchRankings} className="bg-white text-gray-900 hover:bg-gray-200 px-8 py-3 rounded-xl font-bold transition-colors">
+                Try Again
+              </button>
             </motion.div>
           ) : (
             <motion.div
               key="content"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
             >
               {classStats.map((stats, idx) => (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05, type: "spring", stiffness: 300, damping: 24 }}
                   key={stats.className}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden relative border-l-[6px]"
-                  style={{ borderLeftColor: CLASS_COLORS[stats.className] || "#808080" }}
+                  className="group bg-gray-900/60 backdrop-blur-sm rounded-2xl overflow-hidden relative border border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
                 >
-                  {/* Rank Badge */}
-                  <div className="absolute top-3 right-3 w-10 h-10 bg-[#fbbf24] rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
-                    #{idx + 1}
+                  {/* Top Accent Line */}
+                  <div 
+                    className="absolute top-0 left-0 w-full h-1"
+                    style={{ backgroundColor: CLASS_COLORS[stats.className] || "#808080" }}
+                  />
+
+                  {/* Rank Number Background Watermark */}
+                  <div className="absolute -right-4 -top-6 text-[120px] font-black italic opacity-[0.03] pointer-events-none select-none text-white leading-none">
+                    {idx + 1}
                   </div>
 
-                  <div className="p-5">
-                    {/* Class Badge */}
-                    <div 
-                      className="inline-block px-4 py-1 rounded-full text-white text-xs font-bold mb-6 shadow-sm"
-                      style={{ backgroundColor: CLASS_COLORS[stats.className] || "#808080" }}
-                    >
-                      {stats.className}
-                    </div>
-
-                    {/* Stats List */}
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500 font-medium">Avg Points</span>
-                        <span className="text-[#3b82f6] font-bold text-lg">{stats.avgDps}</span>
+                  <div className="p-6 relative z-10">
+                    {/* Header: Rank & Class */}
+                    <div className="flex justify-between items-start mb-8">
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-3 h-10 rounded-full"
+                          style={{ backgroundColor: CLASS_COLORS[stats.className] || "#808080" }}
+                        />
+                        <div>
+                          <h2 className="text-2xl font-bold text-white tracking-tight leading-none mb-1">
+                            {stats.className}
+                          </h2>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Rank #{idx + 1}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500 font-medium">Players</span>
-                        <span className="text-[#3b82f6] font-bold text-lg">{stats.playerCount}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500 font-medium">Max Points</span>
-                        <span className="text-[#3b82f6] font-bold text-lg">{stats.maxDps}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500 font-medium">Min Points</span>
-                        <span className="text-[#3b82f6] font-bold text-lg">{stats.minDps}</span>
+                      
+                      <div className="flex items-center gap-1.5 bg-gray-800/80 px-3 py-1.5 rounded-lg border border-gray-700/50">
+                        <Users className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-bold text-gray-300">{stats.playerCount}</span>
                       </div>
                     </div>
 
-                    {/* Top Player */}
-                    <div className="mt-8 pt-4 border-t border-gray-100">
-                      <p className="text-xs font-bold text-gray-800 truncate">
-                        {stats.topPlayer.name}: <span className="text-[#3b82f6]">{stats.topPlayer.score} pts</span>
-                      </p>
+                    {/* Primary Stat: Avg Points */}
+                    <div className="mb-8 bg-gray-950/50 rounded-xl p-4 border border-gray-800/80">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Average Points</div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-black text-white tracking-tighter" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                          {stats.avgDps.toLocaleString()}
+                        </span>
+                        <span className="text-sm font-medium text-gray-500">pts</span>
+                      </div>
+                    </div>
+
+                    {/* Secondary Stats Grid */}
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      <div>
+                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Max Points</div>
+                        <div className="text-lg font-bold text-gray-300" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                          {stats.maxDps.toLocaleString()}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Min Points</div>
+                        <div className="text-lg font-bold text-gray-300" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                          {stats.minDps.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Top Player Footer */}
+                    <div className="pt-4 border-t border-gray-800/80 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Top Player</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-white truncate max-w-[120px]" title={stats.topPlayer.name}>
+                          {stats.topPlayer.name}
+                        </div>
+                        <div className="text-xs font-medium" style={{ color: CLASS_COLORS[stats.className] || "#808080" }}>
+                          {stats.topPlayer.score.toLocaleString()} pts
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
