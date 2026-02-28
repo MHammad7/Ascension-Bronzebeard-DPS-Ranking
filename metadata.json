@@ -1,0 +1,5 @@
+{
+  "name": "Ascension WoW DPS Rankings",
+  "description": "Real-time DPS rankings by class for the Ascension WoW Bronzebeard server, supporting multiple difficulties.",
+  "requestFramePermissions": []
+}
