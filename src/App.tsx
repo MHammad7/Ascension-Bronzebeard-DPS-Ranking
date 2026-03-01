@@ -57,8 +57,14 @@ interface ClassStats {
   };
 }
 
+const LOCATIONS = [
+  { id: "Molten Core", name: "Molten Core" },
+  { id: "Onyxia's Lair", name: "Onyxia's Lair" },
+];
+
 export default function App() {
   const [difficulty, setDifficulty] = useState("overall");
+  const [location, setLocation] = useState("Molten Core");
   const [classStats, setClassStats] = useState<ClassStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -75,7 +81,7 @@ export default function App() {
 
     try {
       setProgress(30);
-      const response = await fetch(`/api/rankings?difficulty=${difficulty}`, {
+      const response = await fetch(`/api/rankings?difficulty=${difficulty}&location=${encodeURIComponent(location)}`, {
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -159,7 +165,7 @@ export default function App() {
 
   useEffect(() => {
     fetchRankings();
-  }, [difficulty]);
+  }, [difficulty, location]);
 
   const [isDemo, setIsDemo] = useState(false);
 
@@ -221,7 +227,7 @@ export default function App() {
                 <Shield className="w-3.5 h-3.5" /> Bronzebeard
               </span>
               <span className="px-3 py-1 bg-red-900/20 text-red-400 rounded-md border border-red-900/30 shadow-sm">
-                Molten Core (Phase 2)
+                {location} (Phase 2)
               </span>
             </div>
           </div>
@@ -241,23 +247,43 @@ export default function App() {
 
         {/* Controls Section */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-10 bg-gray-900/40 p-4 rounded-2xl border border-gray-800/60 backdrop-blur-sm">
-          <div className="flex flex-wrap justify-center gap-2">
-            {DIFFICULTIES.map((diff) => {
-              const isActive = difficulty === diff.id;
-              return (
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Location Selector */}
+            <div className="flex bg-gray-800/50 rounded-xl p-1 border border-gray-700/50">
+              {LOCATIONS.map((loc) => (
                 <button
-                  key={diff.id}
-                  onClick={() => setDifficulty(diff.id)}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border ${
-                    isActive 
-                      ? `${diff.bg} ${diff.border} ${diff.color} shadow-[0_0_15px_rgba(0,0,0,0.2)] scale-105` 
-                      : "bg-gray-800/50 border-transparent text-gray-400 hover:bg-gray-800 hover:text-gray-200"
+                  key={loc.id}
+                  onClick={() => setLocation(loc.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
+                    location === loc.id
+                      ? "bg-gray-700 text-white shadow-sm"
+                      : "text-gray-400 hover:text-gray-200"
                   }`}
                 >
-                  {diff.name}
+                  {loc.name}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Difficulty Selector */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {DIFFICULTIES.map((diff) => {
+                const isActive = difficulty === diff.id;
+                return (
+                  <button
+                    key={diff.id}
+                    onClick={() => setDifficulty(diff.id)}
+                    className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border ${
+                      isActive 
+                        ? `${diff.bg} ${diff.border} ${diff.color} shadow-[0_0_15px_rgba(0,0,0,0.2)] scale-105` 
+                        : "bg-gray-800/50 border-transparent text-gray-400 hover:bg-gray-800 hover:text-gray-200"
+                    }`}
+                  >
+                    {diff.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
           
           <div className="flex items-center gap-4">
